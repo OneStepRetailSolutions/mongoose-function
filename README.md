@@ -27,6 +27,11 @@ m.save(function (err) {
 
 Storing function scope isn't supported. Just store it in a separate document property.
 
+#### New Support - Local functions
+Support for locally referenced functions is implemented.
+
+See ./newToFunctionExample for OSR usage.
+
 #### Security
 
 - string arguments are first trimmed

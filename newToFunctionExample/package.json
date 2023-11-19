@@ -1,0 +1,17 @@
+{
+  "name": "osrs-mongoose-function",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrew Gallagher",
+  "license": "none",
+  "dependencies": {
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.1",
+    "mongoose-function": "github:OneStepRetailSolutions/mongoose-function",
+    "winston": "^3.11.0"
+  }
+}
