@@ -93,14 +93,6 @@ global.setNumeric = function setNumeric(key, keyName, val, config, obj, objkey, 
     return 'test setNumeric';
 };
 
-function transform(info, opts) {
-    const args = info[Symbol.for("splat")];
-    if (args) {
-        info.message = util.format(info.message, ...args);
-    }
-    return info;
-}
-
 mongoose.connection.on("disconnected", () => {
     console.log("Disconnected from Database");
 });
@@ -125,12 +117,8 @@ let theSchema = new mongoose.Schema(
 theSchemaModel = mongoose.model("theSchemaModel", theSchema, "theSchema");
 
 async function doIt() {
-    await mongoose.connect("mongodb://127.0.0.1:27017/test", {
-        //keepAlive: true,
-        //useNewUrlParser: true,
-        //useUnifiedTopology: true,
-        family: 4,
-    });
+    await mongoose.connect("mongodb://127.0.0.1:27017/test");
+    
     let saved = await theSchemaModel.create({
         name: "Test1",
         function1: "function(){return 'test1'} bla bla bla",
