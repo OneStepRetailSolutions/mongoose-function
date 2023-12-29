@@ -1,11 +1,35 @@
 const mongoose = require("mongoose");
 require("mongoose-function")(mongoose, {
-    toFunction: toFunction
+    toFunction: toFunction,
+    isLocalFunction: isLocalFunction,
 });
+
+//Test to see if original arg or "function string" should be stored in database
+function isLocalFunction(arg) {
+    //Two options here given our local function schema setup
+    // 1: "<field>:source:<path>:<functionName>" - this function would have to detect this and return true to store the arg string in the database
+    // 2: "<field>:source:<path>:<functionName>:true/false" - the final value being true would cause the arg to be kept, false would force the loaded function into the db.
+
+    if (typeof arg == "string") {
+        let functionalArray = arg.split(":");
+
+        if (functionalArray && functionalArray.length >= 4) {
+            if (functionalArray.length >= 5) {
+                return functionalArray[4].toLowerCase() == "true" ? true : false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
 
 //new toFunction
 // Basically mirrors existing non-custom toFunction.
-// Supports new embedded reference to a local function. Could be done differently, 
+// Supports new embedded reference to a local function. Could be done differently,
 // but this is our implementation.
 function toFunction(arg) {
     ("use strict");
@@ -82,7 +106,8 @@ function trimStringFunctionToJustFunction(arg) {
 
 //"Global" function for allowed reference in mongoose-function
 global.setNumeric = function setNumeric(key, keyName, val, config, obj, objkey, objvalue, rootobj) {
-    return 'test setNumeric';
+    console.log("breakpoint");
+    return "test setNumeric";
 };
 
 //The example
@@ -117,7 +142,7 @@ async function doIt() {
     //Use the model to create a record with each style of "Function"
     let saved = await theSchemaModel.create({
         name: "Test1",
-        function1: "function(){return 'test1'} bla bla bla",
+        function1: "function(){return 'test1'}",
         function2: function () {
             return "test2";
         },
@@ -130,7 +155,7 @@ async function doIt() {
 
     //Show the record to the outside world.
     console.log(JSON.stringify(loaded));
-    
+
     //Run the loaded record functions.
     console.log(`function1 output: ${loaded.function1()}`);
     console.log(`function2 output: ${loaded.function2()}`);
